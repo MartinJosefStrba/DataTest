@@ -30,7 +30,7 @@ import os
 # Proxy_url = "http://srchprod-ko-proxy.organic.ftxt.iszn.cz:8070"
 # PushGW_url = "http://localhost:9091"
 # Fulltext_url = "/fulltext/volume/1/complete"
-# Service = "fulltext-production"
+# Service = "Fulltext-production"
 
 # URL variables for this script for debug testing:
 # Proxy_url = "http://srchdev-proxy.dev.dszn.cz"
@@ -136,6 +136,16 @@ def process_latest_valid_folder(root_path):
         logging.info("\n✅ Metrics were successfully pushed to the Pushgateway.")
     except Exception as e:
         logging.error(f"\n❌ An error occured while pushing the metrics: {e}")
+
+# Logging the Pushgateway URL
+def get_push_url(pushgw_url, job, grouping_key):
+    url = pushgw_url.rstrip('/')
+    url += f"/metrics/job/{job}"
+    for k, v in grouping_key.items():
+        url += f"/{k}/{v}"
+    return url
+
+logging.info("Metriky se budou posílat na: %s", get_push_url(PushGW_url, JOB_NAME, {"instance": Service}))
 
 
 if __name__ == "__main__":
